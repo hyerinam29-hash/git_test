@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>환영합니다!</title>
+    <title>멋진 인터랙티브 페이지</title>
     <style>
         * {
             margin: 0;
@@ -19,16 +19,78 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: background 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.theme-ocean {
+            background: linear-gradient(135deg, #0077be 0%, #00b4d8 100%);
+        }
+
+        body.theme-sunset {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
+        }
+
+        body.theme-forest {
+            background: linear-gradient(135deg, #2d6a4f 0%, #52b788 100%);
         }
 
         .container {
             background: white;
             border-radius: 20px;
             padding: 50px;
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             text-align: center;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        body.dark-mode .container {
+            background: #2a2a3e;
+            color: white;
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .icon-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .clock {
+            font-size: 1.2em;
+            color: #888;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        body.dark-mode .clock {
+            color: #bbb;
         }
 
         h1 {
@@ -38,11 +100,27 @@
             animation: fadeIn 1s ease-in;
         }
 
+        body.dark-mode h1 {
+            color: #fff;
+        }
+
         p {
             color: #666;
             font-size: 1.2em;
             line-height: 1.8;
             margin-bottom: 30px;
+        }
+
+        body.dark-mode p {
+            color: #ccc;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
 
         .button {
@@ -66,10 +144,59 @@
             transform: translateY(-1px);
         }
 
+        .button.reset {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
         .emoji {
-            font-size: 3em;
+            font-size: 4em;
             margin-bottom: 20px;
             animation: bounce 2s infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .emoji:hover {
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .theme-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .theme-button:hover {
+            transform: scale(1.1);
+            border-color: white;
+        }
+
+        .theme-button.purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .theme-button.ocean {
+            background: linear-gradient(135deg, #0077be 0%, #00b4d8 100%);
+        }
+
+        .theme-button.sunset {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
+        }
+
+        .theme-button.forest {
+            background: linear-gradient(135deg, #2d6a4f 0%, #52b788 100%);
         }
 
         @keyframes fadeIn {
@@ -88,7 +215,16 @@
                 transform: translateY(0);
             }
             50% {
-                transform: translateY(-10px);
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
             }
         }
 
@@ -97,46 +233,247 @@
             color: #667eea;
             font-weight: bold;
             margin-top: 20px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+        }
+
+        body.dark-mode .counter {
+            background: rgba(102, 126, 234, 0.2);
+            color: #8fa4ff;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        body.dark-mode .stat-card {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        body.dark-mode .stat-label {
+            color: #bbb;
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            animation: particle-float 1s ease-out forwards;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .spinning {
+            animation: spin 0.5s ease-in-out;
         }
     </style>
 </head>
 <body>
+    <div class="controls">
+        <button class="icon-button" onclick="toggleDarkMode()" title="다크모드 전환">🌓</button>
+    </div>
+
     <div class="container">
-        <div class="emoji">🎉</div>
-        <h1>환영합니다!</h1>
+        <div class="clock" id="clock">🕐 로딩 중...</div>
+        <div class="emoji" id="emoji" onclick="spinEmoji()">🎉</div>
+        <h1>멋진 인터랙티브 페이지</h1>
         <p>
-            멋진 웹 페이지에 오신 것을 환영합니다.<br>
-            아래 버튼을 클릭해보세요!
+            아래 버튼들을 클릭해서 재미있는 효과를 경험해보세요!<br>
+            테마도 바꿀 수 있어요! 🎨
         </p>
-        <button class="button" onclick="handleClick()">클릭해보기</button>
+
+        <div class="theme-selector">
+            <button class="theme-button purple" onclick="changeTheme('purple')" title="보라색 테마"></button>
+            <button class="theme-button ocean" onclick="changeTheme('ocean')" title="바다 테마"></button>
+            <button class="theme-button sunset" onclick="changeTheme('sunset')" title="석양 테마"></button>
+            <button class="theme-button forest" onclick="changeTheme('forest')" title="숲 테마"></button>
+        </div>
+
+        <div class="button-group">
+            <button class="button" onclick="handleClick()">✨ 클릭해보기</button>
+            <button class="button reset" onclick="resetCounter()">🔄 리셋</button>
+        </div>
+
         <div class="counter" id="counter">클릭 횟수: 0</div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalClicks">0</div>
+                <div class="stat-label">총 클릭</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="maxStreak">0</div>
+                <div class="stat-label">최대 연속</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="timeSpent">0초</div>
+                <div class="stat-label">체류 시간</div>
+            </div>
+        </div>
     </div>
 
     <script>
-        let clickCount = 0;
-        const emojis = ['🎉', '✨', '🎊', '🌟', '💫', '🎈', '🎁'];
+        console.log('🚀 페이지가 로드되었습니다!');
         
-        function handleClick() {
-            clickCount++;
-            console.log('버튼이 클릭되었습니다! 현재 클릭 횟수:', clickCount);
+        let clickCount = 0;
+        let totalClicks = 0;
+        let maxStreak = 0;
+        let startTime = Date.now();
+        let isDarkMode = false;
+        
+        const emojis = ['🎉', '✨', '🎊', '🌟', '💫', '🎈', '🎁', '🌈', '⭐', '💝'];
+        const celebrationMessages = {
+            5: '🎊 잘하셨어요! 5번째 클릭!',
+            10: '🌟 대단해요! 10번째 클릭!',
+            25: '🎯 와우! 25번째 클릭!',
+            50: '🏆 놀라워요! 50번째 클릭!',
+            100: '👑 전설이에요! 100번째 클릭!'
+        };
+
+        // 실시간 시계
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `🕐 ${hours}:${minutes}:${seconds}`;
+        }
+        
+        // 체류 시간 업데이트
+        function updateTimeSpent() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('timeSpent').textContent = `${elapsed}초`;
+        }
+
+        // 파티클 효과
+        function createParticle(x, y) {
+            console.log('💥 파티클 효과 생성:', { x, y });
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.fontSize = '2em';
+            document.body.appendChild(particle);
             
-            // 카운터 업데이트
+            setTimeout(() => particle.remove(), 1000);
+        }
+
+        // 메인 클릭 핸들러
+        function handleClick(event) {
+            clickCount++;
+            totalClicks++;
+            console.log('🎯 버튼 클릭! 현재 횟수:', clickCount, '| 총 클릭:', totalClicks);
+            
+            // 통계 업데이트
             document.getElementById('counter').textContent = `클릭 횟수: ${clickCount}`;
+            document.getElementById('totalClicks').textContent = totalClicks;
+            
+            if (clickCount > maxStreak) {
+                maxStreak = clickCount;
+                document.getElementById('maxStreak').textContent = maxStreak;
+                console.log('🏆 새로운 최대 연속 기록:', maxStreak);
+            }
             
             // 이모지 랜덤 변경
             const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-            document.querySelector('.emoji').textContent = randomEmoji;
+            document.getElementById('emoji').textContent = randomEmoji;
+            
+            // 파티클 효과 (버튼 위치에)
+            const button = event?.target || document.querySelector('.button');
+            if (button) {
+                const rect = button.getBoundingClientRect();
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        createParticle(
+                            rect.left + rect.width / 2 + (Math.random() - 0.5) * 100,
+                            rect.top + rect.height / 2 + (Math.random() - 0.5) * 100
+                        );
+                    }, i * 50);
+                }
+            }
             
             // 축하 메시지
-            if (clickCount === 5) {
-                alert('🎊 축하합니다! 5번째 클릭입니다!');
-            }
-            if (clickCount === 10) {
-                alert('🌟 대단해요! 10번째 클릭입니다!');
+            if (celebrationMessages[clickCount]) {
+                console.log('🎉 축하 메시지:', celebrationMessages[clickCount]);
+                setTimeout(() => alert(celebrationMessages[clickCount]), 100);
             }
         }
 
-        console.log('페이지가 로드되었습니다!');
+        // 리셋 기능
+        function resetCounter() {
+            console.log('🔄 카운터 리셋! 이전 값:', clickCount);
+            clickCount = 0;
+            document.getElementById('counter').textContent = '클릭 횟수: 0';
+            document.getElementById('emoji').textContent = '🎉';
+        }
+
+        // 다크모드 토글
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode');
+            console.log('🌓 다크모드 전환:', isDarkMode ? 'ON' : 'OFF');
+        }
+
+        // 테마 변경
+        function changeTheme(theme) {
+            console.log('🎨 테마 변경:', theme);
+            document.body.className = '';
+            if (isDarkMode) document.body.classList.add('dark-mode');
+            if (theme !== 'purple') {
+                document.body.classList.add(`theme-${theme}`);
+            }
+        }
+
+        // 이모지 회전
+        function spinEmoji() {
+            const emojiEl = document.getElementById('emoji');
+            emojiEl.classList.add('spinning');
+            console.log('🔄 이모지 회전 효과');
+            setTimeout(() => emojiEl.classList.remove('spinning'), 500);
+        }
+
+        // 초기화
+        setInterval(updateClock, 1000);
+        setInterval(updateTimeSpent, 1000);
+        updateClock();
+        
+        console.log('✅ 모든 기능이 준비되었습니다!');
     </script>
 </body>
 </html>
